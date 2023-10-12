@@ -8,16 +8,14 @@ import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 public class RecoverXaTransactions {
-    private static final String BrokerUserEnv = "MESSAGEBUS_USER";
-    private static final String BrokerPassEnv = "MESSAGEBUS_PASSWORD";
-    private static ActiveMQXAConnectionFactory ACTIVE_MQ_CONNECTION_FACTORY;
+    private static final String BROKER_USER_ENV_VAR = "MESSAGEBUS_USER";
+    private static final String BROKER_PASS_ENV_VAR = "MESSAGEBUS_PASSWORD";
+    private static ActiveMQXAConnectionFactory ActiveMQConnectionFactory;
 
     private static void InitConnection(String brokerUrl) {
-        final String activeMqUsername = System.getenv(BrokerUserEnv);
-        final String activeMqPassword = System.getenv(BrokerPassEnv);
-        ACTIVE_MQ_CONNECTION_FACTORY = new ActiveMQXAConnectionFactory(activeMqUsername, activeMqPassword, brokerUrl);
-        ACTIVE_MQ_CONNECTION_FACTORY.setUserName(activeMqUsername);
-        ACTIVE_MQ_CONNECTION_FACTORY.setPassword(activeMqPassword);
+        final String activeMqUsername = System.getenv(BROKER_USER_ENV_VAR);
+        final String activeMqPassword = System.getenv(BROKER_PASS_ENV_VAR);
+        ActiveMQConnectionFactory = new ActiveMQXAConnectionFactory(activeMqUsername, activeMqPassword, brokerUrl);
     }
 
     public static void main(String[] args) {
@@ -28,7 +26,7 @@ public class RecoverXaTransactions {
             }
 
             InitConnection(args[0]);
-            final XAConnection connection = ACTIVE_MQ_CONNECTION_FACTORY.createXAConnection();
+            final XAConnection connection = ActiveMQConnectionFactory.createXAConnection();
             XASession xaSession = connection.createXASession();
             XAResource xaRes = xaSession.getXAResource();
 
